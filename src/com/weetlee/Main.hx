@@ -31,7 +31,7 @@ class Main extends Sprite
 		
 		player = new Player(this);
 		playerPanel = new PlayerPanel(this, player);
-		monster = new Fighter(this, "Méchant pas beau", 50, 70, 14, 10, 8, 3);
+		monster = new Fighter(this, "Méchant pas beau", 50, 70, 14, 5, 8, 3);
 		monsterPanel = new MonsterPanel(this, monster);
 		monsterPanel.x = 300;
 		gamePanel = new GamePanel(this);
@@ -69,5 +69,19 @@ class Main extends Sprite
 	public function update():Void {
 		playerPanel.update();
 		monsterPanel.update();
+	}
+	public function fighterDies(fighter:Fighter):Void {
+		if (fighter == player) {
+			playerDies();
+		}
+		else if (fighter == monster) {
+			monsterDies();
+		}
+	}
+	private function playerDies():Void {
+		trace('bouh');
+	}
+	private function monsterDies():Void {
+		trace('yeah');
 	}
 }

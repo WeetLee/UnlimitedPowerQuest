@@ -67,7 +67,6 @@ class FighterPanel extends Sprite
 		this.addChild(armorText);
 	}
 	public function update():Void {
-		trace(fighter.curLife);
 		nameText.text = fighter.name;
 		lifeText.text = "LIF : " + fighter.curLife + "/" + fighter.maxLife;
 		attackText.text = "ATK : " + fighter.attack;

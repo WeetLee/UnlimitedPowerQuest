@@ -47,6 +47,10 @@ class ProgressBar extends Sprite
 		}
 		this.draw();
 	}
+	public function setMax(max:Int):Void {
+		this.max = (max > this.max) ? max : this.max;
+		draw();
+	}
 	public function getCurrent():Int
 	{
 		return this.current;

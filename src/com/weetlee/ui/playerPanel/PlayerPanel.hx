@@ -56,8 +56,12 @@ class PlayerPanel extends FighterPanel
 	override public function update():Void {
 		super.update();		
 		lifeBar.setCurrent(player.lifeXp);
+		lifeBar.setMax(player.getLifeXpMax());
 		attackBar.setCurrent(player.attackXp);
+		attackBar.setMax(player.getAttackXpMax());
 		defenseBar.setCurrent(player.defenseXp);
+		defenseBar.setMax(player.getDefenseXpMax());
 		armorBar.setCurrent(player.armorXp);
+		armorBar.setMax(player.getArmorXpMax());
 	}
 }

@@ -37,6 +37,7 @@ class Player extends Fighter
 		return armorGrowth * 100;
 	}
 	public function pop(type:TileType, value:Int):Void {
+		value = (value == 1) ? 1 : value * (value - 1);
 		switch (type) {
 			case ATK: {
 				attackXp += value;
@@ -44,9 +45,32 @@ class Player extends Fighter
 			}
 			case DEF: defenseXp += value;
 			case LIFE: lifeXp += value;
-			case ARM: armorXp += value;
+			case ARM: {
+				armorXp += value;
+				armor += armorGrowth;
+			}
 			default: {};
 		}
+		checkXp();
 		gameManager.update();
+	}
+	private function checkXp():Void {
+		if (attackXp >= getAttackXpMax()) {
+			attackXp = 0;
+			attack++;
+		}
+		if (defenseXp >= getDefenseXpMax()) {
+			defenseXp = 0;
+			defense++;
+		}
+		if (lifeXp >= getLifeXpMax()) {
+			lifeXp = 0;
+			maxLife++;
+			curLife = maxLife;
+		}
+		if (armorXp >= getArmorXpMax()) {
+			armorXp = 0;
+			armorGrowth++;
+		}
 	}
 }

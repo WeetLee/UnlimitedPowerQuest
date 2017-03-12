@@ -7,7 +7,7 @@ import com.weetlee.ui.gamePanel.TileType;
  */
 class TileUtils 
 {
-	public static var DROP_SPEED:Int = 6;
+	public static var DROP_SPEED:Int = 4;
 	public function new() 
 	{
 		
@@ -15,9 +15,9 @@ class TileUtils
 	
 	public static function getImg(type:TileType):Int {
 		switch (type) {
-			case ATK: return 0xff0000;
+			case ATK: return 0x0000ff;
 			case DEF: return 0x00ff00;
-			case LIFE: return 0x0000ff;
+			case LIFE: return 0xff0000;
 			case ARM: return 0xbbbbbb;
 			case GOLD: return 0xffff00;
 			case ROCK: return 0x666666;
