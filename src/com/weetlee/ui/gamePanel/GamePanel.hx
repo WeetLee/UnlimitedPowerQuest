@@ -53,7 +53,6 @@ class GamePanel extends Sprite
 			for (j in 0...Graphics.TILEMAP_SIZE) 
 			{
 				var tile:Tile = genTile(i, j);
-				tile.addEventListener(MouseEvent.CLICK, tagTile);
 				column[j] = tile;
 			}
 			columns[i] = column;
@@ -72,7 +71,7 @@ class GamePanel extends Sprite
 		try {
 			var target = cast(event.target, Tile);
 			var i:Int = Std.int(target.x / Graphics.TILE_SIZE);
-			var j:Int = Std.int(target.y / Graphics.TILE_SIZE);
+			var j:Int = getIndexFromY(Std.int(target.y));
 			if (!columns[i][j].dropping) {
 				columns[i][j].tagged = true;
 				updateBoard();
@@ -125,42 +124,6 @@ class GamePanel extends Sprite
 				catch(e:String) {}
 			}
 		}
-		////diag \ 
-		//for (i in 0...(Graphics.TILEMAP_SIZE-2)) 
-		//{
-			//for (j in 0...(Graphics.TILEMAP_SIZE-2)) 
-			//{
-				//try {
-					//var typeRef:TileType = columns[i][j].getType();
-					//var cmpA:TileType = columns[i+1][j+1].getType();
-					//var cmpB:TileType = columns[i+2][j + 2].getType();
-					//if (typeRef == cmpA && typeRef == cmpB) {
-						//columns[i][j].tagged = true;
-						//columns[i+1][j+1].tagged = true;
-						//columns[i+2][j+2].tagged = true;
-					//}
-				//}
-				//catch(e:String) {}
-			//}
-		//}
-		////diag /
-		//for (i in 2...(Graphics.TILEMAP_SIZE)) 
-		//{
-			//for (j in 0...(Graphics.TILEMAP_SIZE-2)) 
-			//{
-				//try {
-					//var typeRef:TileType = columns[i][j].getType();
-					//var cmpA:TileType = columns[i-1][j+1].getType();
-					//var cmpB:TileType = columns[i-2][j + 2].getType();
-					//if (typeRef == cmpA && typeRef == cmpB) {
-						//columns[i][j].tagged = true;
-						//columns[i-1][j+1].tagged = true;
-						//columns[i-2][j+2].tagged = true;
-					//}
-				//}
-				//catch(e:String) {}
-			//}
-		//}
 	}
 	
 	private function delete():Bool {
@@ -170,9 +133,8 @@ class GamePanel extends Sprite
 		for (i in 0...Graphics.TILEMAP_SIZE) 
 		{
 			dropping = false;
-			for (jBis in 1...(Graphics.TILEMAP_SIZE + 1)) 
+			for (j in 0...Graphics.TILEMAP_SIZE ) 
 			{
-				var j:Int = Graphics.TILEMAP_SIZE - jBis;
 				var tile:Tile = columns[i][j];
 				if (tile == null) {
 					continue;
@@ -210,64 +172,27 @@ class GamePanel extends Sprite
 	private function dropColumn(i:Int):Bool {
 		var column:Array<Tile> = columns[i];
 		var dropped:Bool = false;
-		var emptyCase:Bool = false;
-		var targetJ:Int = Graphics.TILEMAP_SIZE - 1;
+		var targetJ:Int = 0;
 		var count:Int = 0;
-		
-		for (jBis in 1...(Graphics.TILEMAP_SIZE + 1)) 
-		{
-			var j:Int = Graphics.TILEMAP_SIZE - jBis;
-			var tile:Tile = column[j];
-			if (tile == null) {
-				continue;
-			}
-			count++;
-			if (tile.dropping) {
-				dropped = true;
-				tile.y = tile.y + TileUtils.DROP_SPEED;
-				if (tile.y >= targetJ * Graphics.TILE_SIZE) {
-					tile.dropping = false;
-					tile.y = targetJ * Graphics.TILE_SIZE;
-					column[targetJ] = tile;
-					column[j] = null;
-				}
-			}
-			if (!tile.dropping) {
-				targetJ = targetJ - 1;
-			}
-			
-			
-			
-			//var nextTile:Tile;
-			//if (j == 0) {
-				//nextTile = genTile(i,0);
-				//this.addChild(nextTile);
-			//} else {
-				//nextTile = column[j - 1];
-				//if (nextTile != null) {
-					//nextTile.y = j * Graphics.TILE_SIZE;
-					//column[j - 1] = null;
-				//}
-			//}
-			//if (nextTile != null) {
-				//column[j] = nextTile;
-			//}
-		}
-		var index:Int = Graphics.TILEMAP_SIZE;
+		var index:Int = 0;
 		
 		while (count < Graphics.TILEMAP_SIZE) {
 			var tile:Tile = column[index];
+			if (tile == null && index < Graphics.TILEMAP_SIZE) {
+				index++;
+				continue;
+			}
 			if (tile != null) {
 				if (tile.dropping) {
 					dropped = true;
 					tile.y = tile.y + TileUtils.DROP_SPEED;
-					if (tile.y >= targetJ * Graphics.TILE_SIZE) {
+					if (tile.y >= getYFromIndex(targetJ)) {
 						tile.dropping = false;
-						tile.y = targetJ * Graphics.TILE_SIZE;
+						tile.y = getYFromIndex(targetJ);
 						column[targetJ] = tile;
 						column[index] = null;
 						var tmpIndex = index;
-						while (column[tmpIndex + 1] != null) {
+						while (column[tmpIndex + 1] != null && index >= Graphics.TILEMAP_SIZE) {
 							column[tmpIndex] = column[tmpIndex + 1];
 							column[tmpIndex + 1] = null;
 							tmpIndex++;
@@ -276,27 +201,34 @@ class GamePanel extends Sprite
 					}
 				}
 				if (!tile.dropping) {
-					targetJ = targetJ - 1;
+					targetJ = targetJ + 1;
 				}
 			} else {
-				tile = genTile(i, Graphics.TILEMAP_SIZE - index -1);
-				tile.addEventListener(MouseEvent.CLICK, tagTile);
+				tile = genTile(i, index);
 				tile.dropping = true;
 				column[index] = tile;
 			}
-			
-			
-			count++;
 			index++;
+			count++;
 		}
 		return dropped;
 	}
 	
 	
 	private function genTile(i:Int, j:Int):Tile {
-		var tile:Tile = new Tile(i * Graphics.TILE_SIZE, j * Graphics.TILE_SIZE, TileUtils.genType());
+		var tile:Tile = new Tile(i * Graphics.TILE_SIZE, getYFromIndex(j), TileUtils.genType());
 		this.addChild(tile);
 		tile.addEventListener(MouseEvent.CLICK, tagTile);
 		return tile;
+	}
+
+	private function getYFromIndex(index:Int):Int {
+		var reversedIdx:Int = Graphics.TILEMAP_SIZE - (index + 1);
+		return reversedIdx * Graphics.TILE_SIZE;
+	}
+
+	private function getIndexFromY(y:Int):Int {
+		var reversedIdx:Int = Std.int(y / Graphics.TILE_SIZE);
+		return Graphics.TILEMAP_SIZE - (reversedIdx + 1);
 	}
 }

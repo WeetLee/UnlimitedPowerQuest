@@ -31,7 +31,7 @@ class Main extends Sprite
 		
 		player = new Player(this);
 		playerPanel = new PlayerPanel(this, player);
-		monster = new Fighter(this, "Méchant pas beau", 50, 70, 14, 10, 8, 3);
+		monster = new Fighter(this, "Méchant pas beau", 50, 70, 14, 1, 8, 3);
 		monsterPanel = new MonsterPanel(this, monster);
 		monsterPanel.x = 300;
 		gamePanel = new GamePanel(this);
@@ -69,5 +69,13 @@ class Main extends Sprite
 	public function update():Void {
 		playerPanel.update();
 		monsterPanel.update();
+	}
+	public function hasDied(corpse:Fighter) {
+		if(Std.is(corpse, Player)) {
+			//manage player death
+		}
+		else if (Std.is(corpse, Fighter)) {
+			trace("monster dead");
+		}
 	}
 }

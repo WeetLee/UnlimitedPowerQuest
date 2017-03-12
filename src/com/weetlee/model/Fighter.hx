@@ -35,7 +35,6 @@ class Fighter
 		//calculate damage
 		var damage = this.attack - target.defense;
 		damage = damage > 0 ? damage : 1;
-		trace(damage);
 		//apply damage
 		if (damage > target.armor) {
 			damage -= target.armor;
@@ -51,6 +50,8 @@ class Fighter
 		}
 	}
 	
-	public function die() {};
+	public function die() {
+		gameManager.hasDied(this);
+	};
 	
 }
