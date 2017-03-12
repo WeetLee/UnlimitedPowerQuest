@@ -25,7 +25,7 @@ class TileUtils
 		return 0;
 	}
 	public static function genType():TileType {
-		var max:Int = 6;
+		var max:Int = 5;
 		var rdm = Std.random(max);
 		switch (rdm) {
 			case 0: return ATK;

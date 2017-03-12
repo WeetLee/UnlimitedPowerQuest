@@ -141,8 +141,11 @@ class GamePanel extends Sprite
 				}
 				if (!tile.dropping)	tile.dropping = dropping;
 				if (tile.tagged) {
-					var count:Int = deletedTiles.get(tile.getType());
-					count = (count == null) ? 1 : count + 1;
+					var count:Int = 0;
+					if (deletedTiles.exists(tile.getType())) {
+						count = deletedTiles.get(tile.getType());
+					}
+					count++;
 					deletedTiles.set(tile.getType(), count);
 					this.removeChild(tile);
 					columns[i][j] = null;
@@ -154,9 +157,7 @@ class GamePanel extends Sprite
 		var keys:Iterator<TileType> = deletedTiles.keys();
 		for (tileType in keys) {
 			var count:Int = deletedTiles.get(tileType);
-			if (count != null) {
-				gameManager.getPlayer().pop(tileType, count);
-			}
+			gameManager.getPlayer().pop(tileType, count);
 		}
 		return deleted;
 	}
