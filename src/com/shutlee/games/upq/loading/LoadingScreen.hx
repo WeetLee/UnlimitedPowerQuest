@@ -1,6 +1,6 @@
 package com.shutlee.games.upq.loading;
 
-import openfl.display.Sprite;
+import com.shutlee.games.ui.AdvancedSprite;
 import com.shutlee.games.ui.BitMapSprite;
 import flash.Lib;
 
@@ -8,7 +8,7 @@ import flash.Lib;
  * ...
  * @author Florent Claisse
  */
-class LoadingScreen extends Sprite 
+class LoadingScreen extends AdvancedSprite 
 {
 
 	public function new() 
