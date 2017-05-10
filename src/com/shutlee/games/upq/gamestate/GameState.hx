@@ -9,4 +9,5 @@ enum GameState
 	MENU;
 	PLAYER_SELECT;
 	GAME;
+	MAP;
 }

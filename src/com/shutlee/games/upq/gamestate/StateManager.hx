@@ -1,7 +1,9 @@
 package com.shutlee.games.upq.gamestate;
 
 import com.shutlee.games.upq.gamestate.GameState;
-import com.shutlee.games.upq.loading.LoadingScreen;
+import com.shutlee.games.upq.ui.map.GameMap;
+import com.shutlee.games.upq.views.LoadingScreen;
+import com.shutlee.games.upq.views.MenuScreen;
 import openfl.display.Sprite;
 
 /**
@@ -31,9 +33,11 @@ class StateManager
 		if (panel == null) {
 			switch (key) {
 				case MENU:
-					trace("load menu");
+					panel = new MenuScreen();
 				case LOADING:
 					panel = new LoadingScreen();
+				case MAP:
+					panel = new GameMap(null);
 				default:
 					trace ("not supported yet");
 			}
